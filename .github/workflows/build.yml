@@ -38,5 +38,7 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v3
       with:
-        name: Maven-build-log
-        path: ~/.m2/repository/.lastUpdated
+        name: Maven-logs
+        path: |
+          ~/.m2/repository/.lastUpdated
+          **/target/surefire-reports/*
