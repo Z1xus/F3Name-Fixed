@@ -1,0 +1,42 @@
+name: Build plugin
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'adopt'
+        cache: maven
+
+    - name: Build with Maven
+      run: mvn clean package --file pom.xml
+
+    - name: List target directory
+      run: ls -l target/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: F3Name-Plugin
+        path: target/F3Name-*.jar
+        if-no-files-found: error
+
+    - name: Upload build log on failure
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: Maven-build-log
+        path: ~/.m2/repository/.lastUpdated
